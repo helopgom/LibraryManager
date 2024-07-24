@@ -12,7 +12,7 @@ __pycache__/
 cover/
 
 # Environments
-.env
+*.env
 .venv
 env/
 venv/
