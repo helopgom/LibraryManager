@@ -1,7 +1,9 @@
 class Inventory:
     def __init__(self):
-        self.books = {}
+        self.books = []
+
     def register_book(self, book_id, title, author, quantity):
+        """Register a book in inventory."""
         book = {
             'book_id': book_id,
             'title': title,
@@ -9,15 +11,16 @@ class Inventory:
             'quantity': quantity
         }
         self.books.append(book)
-        print(f"Libro '{title}' registrado con éxito.")
-
+        print(f"Libro '{title}' successfully registered.")
     def remove_book(self, book_id):
+        """Removes a book from inventory by its ID."""
         for book in self.books:
             if book['book_id'] == book_id:
                 self.books.remove(book)
-                print(f"Libro con ID {book_id} eliminado con éxito.")
+                print(f"Book_id {book_id} successfully deleted.")
                 return
-        print(f"No se encontró ningún libro con ID {book_id}.")
+        print(f"No book_id found {book_id}.")
+
 
 inventory = Inventory()
 inventory.register_book(1, 'Cien Años de Soledad', 'Gabriel García Márquez', 10)
