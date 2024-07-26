@@ -20,6 +20,12 @@ class Inventory:
                 print(f"Book_id {book_id} successfully deleted.")
                 return
         print(f"No book_id found {book_id}.")
+    def update_book(self, book_id, title=None, quantity=None):
+        """Updates the information of a book in the inventory."""
+        for book in self.books:
+            if book[]
+
+
 
 
 inventory = Inventory()
