@@ -10,7 +10,7 @@ load_dotenv()
 class Connection:
     _instance = None  # permite crear una única Instancia (patron singleton)
 
-    # Método especial -> creación de un objeto de la instancia de clase
+
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
@@ -58,4 +58,3 @@ class Connection:
             self._connection.close()
             print('conexión cerrada')
             self._connection = None
-
