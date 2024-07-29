@@ -21,41 +21,36 @@ class Inventory:
                 return
         print(f"No book_id found {book_id}.")
 
-def update_book(self, book_id, title=None, author=None, quantity=None):
-    """Updates the information of a book in the inventory."""
-    for book in self.books:
-        if book['book_id'] == book_id:
-            if title:
-                book['title'] = title
-            if author:
-                book['author'] = author
-            if quantity is not None:
-                book['quantity'] = quantity
-            print(f"Booking_id {book_id} updated correctly.")
+    def update_book(self, book_id, title=None, author=None, quantity=None):
+        """Updates the information of a book in the inventory."""
+        for book in self.books:
+            if book['book_id'] == book_id:
+                if title:
+                    book['title'] = title
+                if author:
+                    book['author'] = author
+                if quantity is not None:
+                    book['quantity'] = quantity
+                print(f"Booking_id {book_id} updated correctly.")
+                return
+        print(f"No book with ID found {book_id}.")
+
+    def list_books(self):
+        """Shows the list of books in inventory."""
+        if not self.books:
+            print("Inventory is empty.")
             return
-    print(f"No book with ID found {book_id}.")
+        for book in self.books:
+            print(f"ID: {book['book_id']}, Títle: {book['title']}, Autor: {book['author']}, quantity: {book['quantity']}")
 
-
-def list_books(self):
-    """Shows the list of books in inventory."""
-    if not self.books:
-        print("Inventory is empty.")
-        return
-    for book in self.books:
-        print(f"ID: {book['book_id']}, Títle: {book['title']}, Autor: {book['author']}, quantity: {book['quantity']}")
-
-
-def search_book(self, book_id):
-    """Searches for a book in the inventory by its ID."""
-    for book in self.books:
-        if book['book_id'] == book_id:
-            print(
-                f"Libro encontrado - ID: {book['book_id']}, Título: {book['title']}, Autor: {book['author']}, Cantidad: {book['quantity']}")
-            return
-    print(f"No book with ID found {book_id}.")
-
-
-
+    def search_book(self, book_id):
+        """Searches for a book in the inventory by its ID."""
+        for book in self.books:
+            if book['book_id'] == book_id:
+                print(
+                    f"Libro encontrado - ID: {book['book_id']}, Título: {book['title']}, Autor: {book['author']}, Cantidad: {book['quantity']}")
+                return
+        print(f"No book with ID found {book_id}.")
 
 inventory = Inventory()
 inventory.register_book(1, 'Cien Años de Soledad', 'Gabriel García Márquez', 10)
