@@ -1,4 +1,3 @@
-# main.py
 from config.DbConnection import Connection
 from models.BooksModel import BooksModel
 
@@ -12,11 +11,11 @@ def main():
         books_model = BooksModel()
 
         # Datos para el nuevo libro
-        title = "El Gran Gatsby"
-        author = "F. Scott Fitzgerald"
-        isbn = "9780565"
-        year_edition = "1925-04-10"
-        category_id_categories = 1
+        title = "El señor"
+        author = "tolkien"
+        isbn = "97200565"
+        year_edition = "1920-04-10"  # Fecha en formato YYYY-MM-DD
+        category_id_categories = 2  # Asegúrate de que este ID de categoría exista en la tabla 'categories'
 
         # Insertar el nuevo libro
         print("Intentando insertar el libro...")
@@ -30,3 +29,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

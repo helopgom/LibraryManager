@@ -1,64 +1,60 @@
-from typing import Any, Dict, List, Optional
-from config.DbConnection import Connection
 import psycopg2
+from psycopg2 import errors
+from config.DbConnection import Connection
+from models.BaseModel import BaseModel
+import logging
 
+logging.basicConfig(level=logging.ERROR)
+logger = logging.getLogger(__name__)
 
-class GeneralModel:
-    def _init_(self):
-        self.connection = Connection().get_connection()
+class GeneralModel(BaseModel):
+    def __init__(self):
+        try:
+            self.connection = Connection().get_connection()
+            if self.connection is None:
+                raise ConnectionError("No se pudo establecer la conexión con la base de datos.")
+        except Exception as e:
+            logger.error(f"Error al intentar conectar a la base de datos: {e}")
+            self.connection = None
 
-    def create(self, table: str, data: Dict[str, Any]) -> int:
-        columns = ', '.join(data.keys())
-        values = ', '.join(['%s'] * len(data))
-        query = f"INSERT INTO {table} ({columns}) VALUES ({values}) RETURNING id"
+    def _execute_query(self, query, params, fetch=False):
+        if not self.connection:
+            logger.error("No hay conexión a la base de datos.")
+            return None
+
         try:
             with self.connection.cursor() as cursor:
-                cursor.execute(query, list(data.values()))
+                cursor.execute(query, params)
+                if fetch:
+                    return cursor.fetchall()
                 self.connection.commit()
-                return cursor.fetchone()[0]
-        except psycopg2.Error as e:
+                return cursor.rowcount
+        except (psycopg2.Error, errors.DatabaseError) as e:
             self.connection.rollback()
-            print(f"Error al crear en la tabla {table}: {e}")
-            return 0
+            logger.error(f"Error en la consulta: {e}")
+            return None
 
-    def read(self, table: str, criteria: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+    def create(self, table, data):
+        columns = ', '.join(data.keys())
+        values = ', '.join(['%s'] * len(data))
+        query = f"INSERT INTO {table} ({columns}) VALUES ({values})"
+        return self._execute_query(query, list(data.values()))
+
+    def read(self, table, criteria=None):
         query = f"SELECT * FROM {table}"
         params = []
         if criteria:
             query += " WHERE " + ' AND '.join([f"{key}=%s" for key in criteria.keys()])
             params = list(criteria.values())
-        try:
-            with self.connection.cursor() as cursor:
-                cursor.execute(query, params)
-                columns = [desc[0] for desc in cursor.description]
-                return [dict(zip(columns, row)) for row in cursor.fetchall()]
-        except psycopg2.Error as e:
-            print(f"Error al leer de la tabla {table}: {e}")
-            return []
+        return self._execute_query(query, params, fetch=True)
 
-    def update(self, table: str, data: Dict[str, Any], criteria: Dict[str, Any]) -> int:
+    def update(self, table, data, criteria):
         set_clause = ', '.join([f"{key}=%s" for key in data.keys()])
         where_clause = ' AND '.join([f"{key}=%s" for key in criteria.keys()])
         query = f"UPDATE {table} SET {set_clause} WHERE {where_clause}"
-        try:
-            with self.connection.cursor() as cursor:
-                cursor.execute(query, list(data.values()) + list(criteria.values()))
-                self.connection.commit()
-                return cursor.rowcount
-        except psycopg2.Error as e:
-            self.connection.rollback()
-            print(f"Error al actualizar en la tabla {table}: {e}")
-            return 0
+        return self._execute_query(query, list(data.values()) + list(criteria.values()))
 
-    def delete(self, table: str, criteria: Dict[str, Any]) -> int:
+    def delete(self, table, criteria):
         where_clause = ' AND '.join([f"{key}=%s" for key in criteria.keys()])
         query = f"DELETE FROM {table} WHERE {where_clause}"
-        try:
-            with self.connection.cursor() as cursor:
-                cursor.execute(query, list(criteria.values()))
-                self.connection.commit()
-                return cursor.rowcount
-        except psycopg2.Error as e:
-            self.connection.rollback()
-            print(f"Error al eliminar de la tabla {table}: {e}")
-            return 0
+        return self._execute_query(query, list(criteria.values()))
