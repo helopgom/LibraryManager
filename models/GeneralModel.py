@@ -7,8 +7,10 @@ import logging
 logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger(__name__)
 
+
 class GeneralModel(BaseModel):
     def __init__(self):
+        super().__init__()
         try:
             self.connection = Connection().get_connection()
             if self.connection is None:
