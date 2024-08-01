@@ -76,5 +76,3 @@ class BooksModel(GeneralModel):
                 print("No se encontraron resultados.")
         except psycopg2.Error as e:
             print(f"Error en la consulta: {e}")
-
-
