@@ -8,7 +8,13 @@ class BooksModel(GeneralModel):
         super().__init__()
 
 
-data = {}
+data = {
+'title': "Tierra",
+'author': "Eloy Moreno",
+'isbn': "123456",
+'year_edition': "2022-12-12",
+'category_id_categories': 1
+}
 book = BooksModel()
 book.create('books', data)
 
