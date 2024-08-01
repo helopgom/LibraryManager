@@ -59,25 +59,27 @@ class UsersModel(GeneralModel):
             # Validar si existe el usuario a actualizar
             existing_user = self.read(self.table, {"user_id": user_id})
             if not existing_user:
-                return None  # Retorna None si no se encuentra el usuario
+                raise ValueError(f"No se encontró el usuario con ID {user_id}")
 
             # Verificar si el nuevo correo pertenece a otro usuario
             if "mail" in data:
                 conflicting_email = self.read(self.table, {"mail": data["mail"]})
                 if conflicting_email and conflicting_email[0][0] != user_id:
-                    return None  # Retorna None si el correo está en uso
+                    raise ValueError(f"El correo {data['mail']} ya está en uso por otro usuario.")
 
             # Actualizar la información del usuario
             result = self.update(self.table, data, {"user_id": user_id})
-            return True if result else None  # Retorna True si la actualización fue exitosa, None si no
+            if result:
+                return True  # Retorna True si la actualización fue exitosa
+            return False  # Retorna None si la actualización no fue exitosa
 
         except ValueError as ve:
             logger.error(ve)
-            return None
+            return None  # Retorna None en caso de un error de valor
 
         except psycopg2.Error as e:
             logger.error(f"Error al actualizar el usuario: {e}")
-            return None
+            return None  # Retorna None en caso de un error de base de datos
 
     def delete_user(self, user_id):
         try:
