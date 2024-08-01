@@ -1,137 +1,167 @@
-
 import pytest
-from src.controllers import UserController
+from unittest.mock import MagicMock
+from models.UsersModel import UsersModel
+import psycopg2
+
 
 @pytest.fixture
-def user_controller(mocker):
-    mock_users_model = mocker.patch('src.controllers.UserController.UsersModel')
-    mock_instance = mock_users_model.return_value
-    return UserController(), mock_instance
+def setup_users_model(mocker):
+    """Fixture to setup UsersModel with mocked methods."""
+    model = UsersModel()
+    model._execute_query = mocker.MagicMock()
+    model.create = mocker.MagicMock()
+    model.update = mocker.MagicMock(return_value=True)
+    model.delete = mocker.MagicMock()
+    model.read = mocker.MagicMock()
+    return model
 
-@pytest.fixture
-def usuario_no_existe(mocker):
-    mock_controller = mocker.MagicMock(UserController)
-    mock_controller.create_user.return_value = (True, 'Usuario creado con éxito')  # Simula la respuesta esperada
-    mock_controller.update_user.return_value = (True, 'Usuario actualizado con éxito')
-    mock_controller.delete_user.return_value = (True, 'Usuario eliminado con éxito')
-    mock_controller.get_user.return_value = []  # Simula que no hay usuarios
-    return mock_controller
 
-@pytest.fixture
-def usuario_existe(mocker):
-    mock_controller = mocker.MagicMock(UserController)
-    mock_controller.create_user.return_value = (False, 'El usuario ya existe')  # Simula que el usuario ya existe
-    mock_controller.update_user.return_value = (False, 'Error al actualizar el usuario')
-    mock_controller.delete_user.return_value = (False, 'Error al eliminar el usuario')
-    mock_controller.get_user.return_value = [
-        {'dni': '12345678', 'name': 'Juan', 'lastname': 'Pérez', 'email': 'juan.perez@example.com', 'phone': '1234567890'}
+def test_check_user_existing_dni(setup_users_model):
+    """Test checking a user with an existing DNI."""
+    # Given
+    data = {"dni": "12345678X", "mail": "test@example.com"}
+    setup_users_model._execute_query.return_value = [("1", "Test User", "test@example.com")]
+
+    # When
+    result = setup_users_model.check_user(data)
+
+    # Then
+    assert result == "Ya existe un usuario con el DNI 12345678X"
+
+
+def test_check_user_existing_email(setup_users_model):
+    """Test checking a user with an existing email."""
+    # Given
+    data = {"dni": "87654321X", "mail": "test@example.com"}
+    setup_users_model._execute_query.side_effect = [
+        [],  # No user with DNI
+        [("1", "Test User", "test@example.com")]  # User with email
     ]
-    return mock_controller
 
-def test_create_user_exitoso(usuario_no_existe):
-    """
-    Scenario: Registro exitoso de un nuevo usuario
-      Given que no existe un usuario con DNI "12345678"
-      When intento registrar un usuario con DNI "12345678", nombre "Juan", apellido "Perez", email "juan.perez@example.com", y teléfono "1234567890"
-      Then el usuario es creado exitosamente y recibo un código de estado 200
-    """
-    controller = usuario_no_existe
-    result = controller.create_user('12345678', 'Juan', 'Perez', 'juan.perez@example.com', '1234567890')
+    # When
+    result = setup_users_model.check_user(data)
 
-    # Verificaciones
-    assert result == (True, 'Usuario creado con éxito')
-
-def test_create_user_ya_existente(usuario_existe):
-    """
-    Scenario: Intento de registro de un usuario ya existente
-      Given que existe un usuario con DNI "12345678"
-      When intento registrar un usuario con DNI "12345678", nombre "Juan", apellido "Perez", email "juan.perez@example.com", y teléfono "1234567890"
-      Then recibo un error indicando que el usuario ya existe y un código de estado 400
-    """
-    controller = usuario_existe
-    result = controller.create_user('12345678', 'Juan', 'Perez', 'juan.perez@example.com', '1234567890')
-
-    # Verificaciones
-    assert result == (False, 'El usuario ya existe')
-
-def test_update_user_exitoso(usuario_existe):
-    """
-    Scenario: Actualización exitosa de la información del usuario
-      Given que existe un usuario con DNI "12345678"
-      When intento actualizar la información del usuario con DNI "12345678" con nombre "Juanito", apellido "Pérez", email "juanito.perez@example.com", y teléfono "0987654321"
-      Then la información del usuario es actualizada exitosamente y recibo un código de estado 200
-    """
-    controller = usuario_existe
-    result = controller.update_user('12345678', '12345678', 'Juanito', 'Pérez', 'juanito.perez@example.com', '0987654321')
-
-    # Verificaciones
-    assert result == (True, 'Usuario actualizado con éxito')
-def test_update_user_no_existente(usuario_no_existe):
-    """
-    Scenario: Intento de actualización de información de un usuario que no existe
-      Given que no existe un usuario con DNI "12345678"
-      When intento actualizar la información del usuario con DNI "12345678" con nombre "Juanito", apellido "Pérez", email "juanito.perez@example.com", y teléfono "0987654321"
-      Then recibo un error indicando que el usuario no existe y un código de estado 400
-    """
-    controller = usuario_no_existe
-    result = controller.update_user('12345678', '12345678', 'Juanito', 'Pérez', 'juanito.perez@example.com', '0987654321')
-
-    # Verificaciones
-    assert result == (False, 'Error al actualizar el usuario')
-
-def test_delete_user_exitoso(usuario_existe):
-    """
-    Scenario: Eliminación exitosa de un usuario
-      Given que existe un usuario con DNI "12345678"
-      When intento eliminar al usuario con DNI "12345678"
-      Then el usuario es eliminado exitosamente y recibo un código de estado 200
-    """
-    controller = usuario_existe
-    result = controller.delete_user('12345678')
-
-    # Verificaciones
-    assert result == (True, 'Usuario eliminado con éxito')
-def test_delete_user_no_existente(usuario_no_existe):
-    """
-    Scenario: Intento de eliminación de un usuario que no existe
-      Given que no existe un usuario con DNI "12345678"
-      When intento eliminar al usuario con DNI "12345678"
-      Then recibo un error indicando que el usuario no existe y un código de estado 400
-    """
-    controller = usuario_no_existe
-    result = controller.delete_user('12345678')
-
-    # Verificaciones
-    assert result == (False, 'Error al eliminar el usuario')
-def test_search_users_encontrado(usuario_existe):
-    """
-    Scenario: Búsqueda exitosa de un usuario
-      Given que existe un usuario con DNI "12345678"
-      When busco al usuario con DNI "12345678"
-      Then recibo los datos del usuario y un código de estado 200
-    """
-    controller = usuario_existe
-    result = controller.get_user(dni='12345678')
-
-    # Verificaciones
-    assert len(result) == 1
-    assert result[0]['dni'] == '12345678'
-    assert result[0]['name'] == 'Juan'
-    assert result[0]['lastname'] == 'Pérez'
-    assert result[0]['email'] == 'juan.perez@example.com'
-    assert result[0]['phone'] == '1234567890'
-
-def test_search_users_no_encontrado(usuario_no_existe):
-    """
-    Scenario: Búsqueda de un usuario que no existe
-      Given que no existe un usuario con DNI "12345678"
-      When busco al usuario con DNI "12345678"
-      Then recibo un mensaje indicando que no se encontraron usuarios y un código de estado 404
-    """
-    controller = usuario_no_existe
-    result = controller.get_user(dni='12345678')
-
-    # Verificaciones
-    assert len(result) == 0
+    # Then
+    assert result == "Ya existe un usuario con el correo test@example.com"
 
 
+def test_check_user_no_existing_user(setup_users_model):
+    """Test checking a user with no existing DNI or email."""
+    # Given
+    data = {"dni": "12345678X", "mail": "newuser@example.com"}
+    setup_users_model._execute_query.side_effect = [[], []]  # No users found
+
+    # When
+    result = setup_users_model.check_user(data)
+
+    # Then
+    assert result is None
+
+
+def test_create_user_success(setup_users_model):
+    """Test creating a user successfully."""
+    # Given
+    data = {"dni": "12345678X", "mail": "newuser@example.com"}
+    setup_users_model.check_user = MagicMock(return_value=None)  # No conflicts
+    setup_users_model.create.return_value = True  # User creation successful
+
+    # When
+    result = setup_users_model.create_user(data)
+
+    # Then
+    assert result == True
+
+
+def test_create_user_conflict(setup_users_model):
+    """Test creating a user with a conflict (DNI or email already exists)."""
+    # Given
+    data = {"dni": "12345678X", "mail": "newuser@example.com"}
+    setup_users_model.check_user = MagicMock(return_value="Ya existe un usuario con el DNI 12345678X")
+
+    # When
+    result = setup_users_model.create_user(data)
+
+    # Then
+    assert result is None
+
+
+def test_update_user_success(setup_users_model):
+    """Test updating a user successfully."""
+    # Given
+    user_id = 1
+    data = {"mail": "updateduser@example.com"}
+    setup_users_model.read.return_value = [("1", "Test User", "test@example.com")]
+    setup_users_model.update.return_value = True
+
+    # When
+    result = setup_users_model.update_user(user_id, data)
+
+    # Then
+    assert result is True
+
+
+def test_update_user_not_found(setup_users_model):
+    """Test updating a user that does not exist."""
+    # Given
+    user_id = 1
+    data = {"mail": "updateduser@example.com"}
+    setup_users_model.read.return_value = []  # User not found
+
+    # When
+    result = setup_users_model.update_user(user_id, data)
+
+    # Then
+    assert result is None
+
+
+def test_delete_user_success(setup_users_model):
+    """Test deleting a user successfully."""
+    # Given
+    user_id = 1
+    setup_users_model.read.return_value = [("1", "Test User", "test@example.com")]
+    setup_users_model.delete.return_value = True
+
+    # When
+    result = setup_users_model.delete_user(user_id)
+
+    # Then
+    assert result == True
+
+
+def test_delete_user_not_found(setup_users_model):
+    """Test deleting a user that does not exist."""
+    # Given
+    user_id = 1
+    setup_users_model.read.return_value = []  # User not found
+
+    # When
+    result = setup_users_model.delete_user(user_id)
+
+    # Then
+    assert result is None
+
+
+def test_search_users_success(setup_users_model):
+    """Test searching for users successfully."""
+    # Given
+    criteria = {"mail": "test@example.com"}
+    setup_users_model.read.return_value = [("1", "Test User", "test@example.com")]
+
+    # When
+    result = setup_users_model.search_users(criteria)
+
+    # Then
+    assert result == [("1", "Test User", "test@example.com")]
+
+
+def test_search_users_error(setup_users_model):
+    """Test error handling during search."""
+    # Given
+    criteria = {"mail": "test@example.com"}
+    setup_users_model.read.side_effect = psycopg2.Error("Database error")
+
+    # When
+    result = setup_users_model.search_users(criteria)
+
+    # Then
+    assert result is None

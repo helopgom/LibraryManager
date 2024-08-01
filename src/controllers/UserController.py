@@ -1,11 +1,14 @@
 from models.UsersModel import UsersModel
 
+
 class UserController:
     def __init__(self):
         self.user_model = UsersModel()
 
     def check_user(self, data):
+        """Verifica si ya existe un usuario con el mismo DNI o correo."""
         try:
+            # Verifica el usuario usando el método del modelo
             verification_message = self.user_model.check_user(data)
             if verification_message:
                 return dict(status_code=400, response=verification_message)
@@ -14,11 +17,14 @@ class UserController:
             return dict(status_code=500, response='Error interno del servidor: ' + str(e))
 
     def create_user(self, data):
+        """Crea un nuevo usuario después de verificar que no haya duplicados."""
         try:
+            # Verificar si ya existe un usuario con el mismo DNI o correo
             verification_response = self.check_user(data)
             if verification_response['status_code'] != 200:
                 return verification_response
 
+            # Crear el nuevo usuario si la verificación fue exitosa
             result = self.user_model.create_user(data)
             if result:
                 return dict(status_code=201, response='Usuario creado con éxito')

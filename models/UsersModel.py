@@ -14,13 +14,17 @@ class UsersModel(GeneralModel):
     def check_user(self, data):
         """Verifica si ya existe un usuario con el mismo DNI o correo."""
         try:
-            # Verificar por DNI
-            existing_user = self.read(self.table, {"dni": data["dni"]})
+            # Construir consulta para verificar por DNI
+            query_dni = "SELECT * FROM {} WHERE dni = %s".format(self.table)
+            params_dni = (data["dni"],)
+            existing_user = self._execute_query(query_dni, params_dni, fetch=True)
             if existing_user:
                 return f"Ya existe un usuario con el DNI {data['dni']}"
 
-            # Verificar por correo electrónico
-            existing_email = self.read(self.table, {"mail": data["mail"]})
+            # Construir consulta para verificar por correo electrónico
+            query_email = "SELECT * FROM {} WHERE mail = %s".format(self.table)
+            params_email = (data["mail"],)
+            existing_email = self._execute_query(query_email, params_email, fetch=True)
             if existing_email:
                 return f"Ya existe un usuario con el correo {data['mail']}"
 
@@ -55,23 +59,23 @@ class UsersModel(GeneralModel):
             # Validar si existe el usuario a actualizar
             existing_user = self.read(self.table, {"user_id": user_id})
             if not existing_user:
-                raise ValueError(f"No se encontró el usuario con ID {user_id}")
+                return None  # Retorna None si no se encuentra el usuario
 
             # Verificar si el nuevo correo pertenece a otro usuario
             if "mail" in data:
                 conflicting_email = self.read(self.table, {"mail": data["mail"]})
                 if conflicting_email and conflicting_email[0][0] != user_id:
-                    raise ValueError(f"El correo {data['mail']} ya está en uso por otro usuario.")
+                    return None  # Retorna None si el correo está en uso
 
             # Actualizar la información del usuario
             result = self.update(self.table, data, {"user_id": user_id})
-            return result
+            return True if result else None  # Retorna True si la actualización fue exitosa, None si no
 
         except ValueError as ve:
             logger.error(ve)
             return None
 
-        except psycopg2.Error as e:  # Captura todas las excepciones relacionadas con psycopg2
+        except psycopg2.Error as e:
             logger.error(f"Error al actualizar el usuario: {e}")
             return None
 
