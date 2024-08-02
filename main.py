@@ -41,19 +41,19 @@ book = BooksModel()
         conn_instance.close_connection()
 
 # Datos del libro de ejemplo
-data = {
-    'title': "La  moderna",
-    'author': "Francisco",
-    'isbn': "9785550",
-    'year_edition': "2013-01-12",
-    'category_id_categories': 3
-}
+# data = {
+#     'title': "La  moderna",
+#     'author': "Francisco",
+#     'isbn': "9785550",
+#     'year_edition': "2013-01-12",
+#     'category_id_categories': 3
+# }
 
 
 # Ejemplos de uso
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
     # Crear libro
       # book.create_book(data)
 
@@ -67,6 +67,6 @@ if __name__ == "__main__":
     # book.delete_book(delete_criteria)
 
     # Consultar todos los libros
-    book.query_books({'book_id': 23})
+    # book.query_books({'book_id': 23})
 
 
