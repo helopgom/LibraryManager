@@ -85,3 +85,4 @@ class LibraryLoans(GeneralModel):
                 print(f"No loan found with ID {loan_id}.")
         except Error as e:
             print(f"Error fetching loan data: {e}")
+
