@@ -3,8 +3,6 @@ class Category {
     +int category_id
     +String category_name
     +Category(String category_name) <<constructor>>
-    +add_category()
-    +remove_category()
     +search_and_filtering()
 }
 
@@ -16,12 +14,12 @@ class Book {
     +Date year_edition
     +int category_id_categories
     +Book(String title, String author, String isbn, Date year_edition, int category_id) <<constructor>>
-    +register_book()
-    +remove_book()
-    +update_book()
+    +show_book_info()
+    +register_new_book()
+    +update_availability()
+    +update_info()
     +no_duplication()
-    +search_and_filtering()
-    +delete()
+    +delete_book()
 }
 
 class User {
@@ -32,12 +30,12 @@ class User {
     +String mail
     +String phone
     +User(String dni, String user_name, String user_lastname, String mail, String phone) <<constructor>>
-    +user_info()
+    +show_user_info()
     +register_new_user()
     +update_info()
     +no_duplication()
     +search_and_filtering()
-    +delete()
+    +delete_user()
 }
 
 class LibraryLoan {
@@ -47,11 +45,11 @@ class LibraryLoan {
     +Date entry_date
     +Date return_date
     +LibraryLoan(int book_id, int user_id, Date entry_date, Date return_date) <<constructor>>
-    +register_loan()
-    +end_loan() <<delete>>
-    +return_delay_alert()
+    +register_new_loan()
+    +end_loan()
+    +show_loan_delay_alert()
+    +notify_loan_delay()
     +notify_return_date()
-    +notify_delay_date()
 }
 
 Category "1" -- "0..*" Book : contains
