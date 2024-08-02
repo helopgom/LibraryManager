@@ -1,5 +1,6 @@
 from config.DbConnection import Connection
 from models.BooksModel import BooksModel
+from models.CategoriesModel import CategoriesModel
 
 def main():
     try:
@@ -29,4 +30,58 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+    # Crear una instancia de CategoriesModel
+    categories_model = CategoriesModel()
+
+    # Datos para una nueva categoría
+    category_data = {
+        'category_id': 1,  # Cambia el ID para probar con un nuevo valor
+        'category_name': 'Ficción'
+    }
+
+    # **1. Crear una nueva categoría si no existe**
+    print("\nVerificando y creando una categoría...")
+    if categories_model.check_category(category_id=category_data['category_id']):
+        print("La categoría ya existe.")
+    else:
+        result = categories_model.create_category(
+            category_data['category_id'],
+            category_data['category_name']
+        )
+        if result:
+            print("Categoría creada con éxito.")
+        else:
+            print("No se pudo crear la categoría.")
+
+    # **2. Actualizar una categoría existente**
+    update_data = {
+        'category_id': 5,
+        'category_name': 'Thriller'
+    }
+    print("\nActualizando categoría...")
+    update_result = categories_model.update(
+        update_data['category_id'],
+        update_data['category_name']
+    )
+    if update_result:
+        print("Categoría actualizada con éxito.")
+    else:
+        print("No se pudo actualizar la categoría.")
+
+    # **3. Buscar categorías existentes**
+    search_criteria = {
+        'category_name': 'Ficción'
+    }
+    print("\nBuscando categorías...")
+    search_results = categories_model.search_and_filter(
+        category_name=search_criteria['category_name']
+    )
+    if search_results:
+        print("Categorías encontradas:")
+        for category in search_results:
+            print(category)
+    else:
+        print("No se encontraron categorías con esos criterios.")
+
 
