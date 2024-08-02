@@ -4,7 +4,7 @@ import time
 
 
 class LibraryLoans(GeneralModel):
-    def __init__(self, loan_id=None, book_id_books=None, user_id=None, entry_date=None, return_date=None):
+    def __init__(self, loan_id, book_id_books, user_id, entry_date, return_date):
         super().__init__()  # Inicializa la conexión de GeneralModel
         # Inicializa los atributos específicos de LibraryLoans
         self.loan_id = loan_id
@@ -12,6 +12,19 @@ class LibraryLoans(GeneralModel):
         self.user_id = user_id
         self.entry_date = entry_date
         self.return_date = return_date
+
+
+    def avaible_loan(self,book_id_books):
+        try :
+            # verificamos si hay prestamos activos para el libro con el book_id_books dado
+            loan = self.read("public.library_loans", {"book_id_books: book_id_books"})
+            if loan:
+                print(f"El libro con el ID{book_id_books} no está disponible.")
+            else:
+                print(f"El l ibro conID {book_id_books} está disponible.")
+        except Error as e:
+            print(f"Error al verificar la disponibilidad del libro: {e}")
+
 
     def register_loan(self):
         try:
