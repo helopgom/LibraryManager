@@ -1,0 +1,60 @@
+@startuml
+class Category {
+    +int category_id
+    +String category_name
+    +Category(String category_name) <<constructor>>
+    +add_category()
+    +remove_category()
+    +search_and_filtering()
+}
+
+class Book {
+    +int book_id
+    +String title
+    +String author
+    +String isbn
+    +Date year_edition
+    +int category_id_categories
+    +Book(String title, String author, String isbn, Date year_edition, int category_id) <<constructor>>
+    +register_book()
+    +remove_book()
+    +update_book()
+    +no_duplication()
+    +search_and_filtering()
+    +delete()
+}
+
+class User {
+    +int user_id
+    +String dni
+    +String user_name
+    +String user_lastname
+    +String mail
+    +String phone
+    +User(String dni, String user_name, String user_lastname, String mail, String phone) <<constructor>>
+    +user_info()
+    +register_new_user()
+    +update_info()
+    +no_duplication()
+    +search_and_filtering()
+    +delete()
+}
+
+class LibraryLoan {
+    +int loan_id
+    +int book_id
+    +int user_id
+    +Date entry_date
+    +Date return_date
+    +LibraryLoan(int book_id, int user_id, Date entry_date, Date return_date) <<constructor>>
+    +register_loan()
+    +end_loan() <<delete>>
+    +return_delay_alert()
+    +notify_return_date()
+    +notify_delay_date()
+}
+
+Category "1" -- "0..*" Book : contains
+Book "1" -- "0..*" LibraryLoan : loaned by
+User "1" -- "0..*" LibraryLoan : borrows
+@enduml
