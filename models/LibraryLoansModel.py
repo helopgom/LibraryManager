@@ -1,6 +1,6 @@
 from GeneralModel import GeneralModel
 from psycopg2 import Error
-import time
+import tim
 
 
 class LibraryLoans(GeneralModel):
