@@ -7,6 +7,7 @@ from src.controllers.UserController import UserController
 @pytest.fixture
 def setup_user_controller(mocker):
     """Configuración del UserController con métodos del modelUser simulado para poder hacer las comprobaciones."""
+
     controller = UserController()
     mocker.patch.object(controller.user_model, 'check_user')
     mocker.patch.object(controller.user_model, 'create_user')
@@ -24,7 +25,6 @@ def test_check_user_existing_user(setup_user_controller):
     # Given
     setup_user_controller.user_model.check_user.return_value = "Ya existe un usuario con el DNI 12345678"
     data = {"dni": "12345678", "mail": "test@example.com"}
-    """Hola Cris"""
     # When
     response = setup_user_controller.check_user(data)
 
