@@ -1,25 +1,38 @@
+
 from config.DbConnection import Connection
+from models.UsersModel import UsersModel
+
+
 from models.BooksModel import BooksModel
 
-def main():
-    try:
-        # Inicializar la conexión a la base de datos
-        conn_instance = Connection()
-        print("Conexión a la base de datos inicializada.")
 
-        # Crear una instancia del modelo BooksModel
-        books_model = BooksModel()
+# Instancia del modelo BooksModel
+book = BooksModel()
 
-        # Datos para el nuevo libro
-        title = "El señor"
-        author = "tolkien"
-        isbn = "97200565"
-        year_edition = "1920-04-10"  # Fecha en formato YYYY-MM-DD
-        category_id_categories = 2  # Asegúrate de que este ID de categoría exista en la tabla 'categories'
+        user_model = UsersModel()
 
-        # Insertar el nuevo libro
-        print("Intentando insertar el libro...")
-        books_model.create(title, author, isbn, year_edition, category_id_categories)
+        # Datos para un nuevo usuario
+        new_user_data = {
+            "dni": "13456879X",
+            "user_name": "María",
+            "user_lastname": "Estevez",
+            "mail": "maria.estevez@example.com",
+            "phone": "987654321"
+        }
+
+
+
+        # Eliminar un usuario
+        print("\nIntentando eliminar un usuario...")
+        result = user_model.delete_user(13)
+        if result:
+            print("Usuario eliminado con éxito.")
+        else:
+            print("No se pudo eliminar el usuario.")
+
+
+
+
 
     except Exception as e:
         print(f"Error en el proceso principal: {e}")
@@ -27,6 +40,33 @@ def main():
         # Cerrar la conexión al finalizar
         conn_instance.close_connection()
 
+# Datos del libro de ejemplo
+data = {
+    'title': "La  moderna",
+    'author': "Francisco",
+    'isbn': "9785550",
+    'year_edition': "2013-01-12",
+    'category_id_categories': 3
+}
+
+
+# Ejemplos de uso
+
+
 if __name__ == "__main__":
-    main()
+    # Crear libro
+      # book.create_book(data)
+
+    # # Criterios para actualizar un libro y los nuevos datos
+    # update_criteria = {'book_id': 22}
+    # new_data = {'author': 'Rita'}
+    # book.update_book_data(update_criteria, new_data)
+
+    # # Eliminar un libro con un criterio específico (por ejemplo, por ISBN)
+    # delete_criteria = {'book_id': 21}
+    # book.delete_book(delete_criteria)
+
+    # Consultar todos los libros
+    book.query_books({'book_id': 23})
+
 
