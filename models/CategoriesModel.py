@@ -46,12 +46,12 @@ class CategoriesModel(GeneralModel):
         result = self._execute_query(query, params, fetch=True)
         return result[0][0] if result else False
 
-    def update(self, category_id, new_name):
+    def update_category(self, category_id, new_name):
         query = "UPDATE categories SET category_name = %s WHERE category_id = %s"
         params = (new_name, category_id)
         return self._execute_query(query, params)
 
-    def delete(self, category_id):
+    def delete_category(self, category_id):
         query = "DELETE FROM categories WHERE category_id = %s"
         params = (category_id,)
         return self._execute_query(query, params)
