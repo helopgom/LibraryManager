@@ -7,7 +7,6 @@ class BooksModel(GeneralModel):
         super().__init__()
         self.table_name = 'books'
 
-
     # Función para crear un libro
     def create_book(self, data):
         isbn = data.get('isbn')
@@ -24,8 +23,6 @@ class BooksModel(GeneralModel):
         except psycopg2.Error as e:
             print(f"Error al crear el libro: {e}")
 
-
-
     # Función para comprobar si un libro ya existe
     def check_duplicate_book(self, isbn):
         try:
@@ -33,7 +30,6 @@ class BooksModel(GeneralModel):
             return bool(results)
         except psycopg2.Error as e:
             print(f"Error al crear el libro: {e}")
-
 
     # Función para actualizar los datos de un libro (requiere criterios y datos a actualizar)
     def update_book_data(self, criteria, new_data):
@@ -46,7 +42,6 @@ class BooksModel(GeneralModel):
         except psycopg2.Error as e:
             print(f"Error al actualizar los datos: {e}")
 
-
     # Función para eliminar un libro (requiere un criterio)
     def delete_book(self, criteria):
         try:
@@ -57,7 +52,6 @@ class BooksModel(GeneralModel):
                 print(f'Error al eliminar el libro.')
         except psycopg2.Error as e:
             print(f"Error al eliminar el libro: {e}")
-
 
     # Función para consultar o filtrar la información
     def query_books(self, criteria=None):
