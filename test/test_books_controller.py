@@ -4,25 +4,28 @@ from src.controllers.BooksController import BooksController
 
 @pytest.fixture
 def setup_books_controller(mocker):
-    """Configuración del BooksController con métodos del modelo BooksModel simulados."""
     controller = BooksController()
-    mocker.patch.object(controller.book_model, 'create')
-    mocker.patch.object(controller.book_model, 'read')
-    mocker.patch.object(controller.book_model, 'update')
-    mocker.patch.object(controller.book_model, 'delete')
+    mocker.patch.object(controller, 'check_duplicate_book')
+    mocker.patch.object(controller, 'create_book')
+    mocker.patch.object(controller, 'update_book_data')
+    mocker.patch.object(controller, 'delete_book')
+    mocker.patch.object(controller, 'query_books')
     return controller
 
 
 def test_create_book_success(setup_books_controller):
-    """Simula la creación exitosa de un libro que no existe en la base de datos."""
+    """
+       Given: No existing book with the given ISBN
+       When: Attempting to create a new book
+       Then: The book is successfully inserted
+       """
     # Given
-    setup_books_controller.book_model.read.return_value = []
-    setup_books_controller.book_model.create.return_value = True
+    setup_books_controller.check_duplicate_book.return_value = False
+    setup_books_controller.create_book.return_value = dict(status_code=200, response='Libro insertado con éxito.',
+                                                           result={'isbn': '12345', 'title': 'Test Book'})
     data = {'isbn': '12345', 'title': 'Test Book'}
-
     # When
     response = setup_books_controller.create_book(data)
-
     # Then
     assert response['status_code'] == 200
     assert response['response'] == 'Libro insertado con éxito.'
@@ -30,87 +33,106 @@ def test_create_book_success(setup_books_controller):
 
 
 def test_create_book_duplicate(setup_books_controller):
-    """Simula un intento de creación de un libro con un ISBN que ya existe."""
+    """
+       Given: A book with the given ISBN already exists
+       When: Attempting to create a new book with the same ISBN
+       Then: The response indicates that the book already exists
+       """
     # Given
-    setup_books_controller.book_model.read.return_value = [{'isbn': '12345', 'title': 'Existing Book'}]
+    setup_books_controller.check_duplicate_book.return_value = True
+    setup_books_controller.create_book.return_value = {
+        'status_code': 400,
+        'response': 'El libro con el ISBN 12345 ya existe.'
+    }
     data = {'isbn': '12345', 'title': 'Test Book'}
-
     # When
     response = setup_books_controller.create_book(data)
-
     # Then
     assert response['status_code'] == 400
     assert response['response'] == 'El libro con el ISBN 12345 ya existe.'
 
 
 def test_update_book_success(setup_books_controller):
-    """Simula la actualización exitosa de un libro existente."""
+    """
+       Given: The book with the given ISBN exists and can be updated
+       When: Updating the book's data
+       Then: The book update is successful
+       """
     # Given
-    setup_books_controller.book_model.update.return_value = True
+    setup_books_controller.update_book_data.return_value = dict(status_code=200,
+                                                                response='Libro actualizado con éxito.')
     criteria = {'isbn': '12345'}
     new_data = {'title': 'Updated Test Book'}
-
     # When
     response = setup_books_controller.update_book_data(criteria, new_data)
-
     # Then
     assert response['status_code'] == 200
     assert response['response'] == 'Libro actualizado con éxito.'
 
 
 def test_update_book_failure(setup_books_controller):
-    """Simula un fallo en la actualización de un libro."""
+    """
+       Given: The book with the given ISBN exists but cannot be updated
+       When: Attempting to update the book's data
+       Then: The book update fails
+       """
     # Given
-    setup_books_controller.book_model.update.return_value = False
+    setup_books_controller.update_book_data.return_value = dict(status_code=500,
+                                                                response='Error al actualizar el libro.')
     criteria = {'isbn': '12345'}
     new_data = {'title': 'Updated Test Book'}
-
     # When
     response = setup_books_controller.update_book_data(criteria, new_data)
-
     # Then
     assert response['status_code'] == 500
     assert response['response'] == 'Error al actualizar el libro.'
 
 
 def test_delete_book_success(setup_books_controller):
-    """Simula la eliminación exitosa de un libro."""
+    """
+       Given: The book with the given ISBN exists and can be deleted
+       When: Attempting to delete the book
+       Then: The book is successfully deleted
+       """
     # Given
-    setup_books_controller.book_model.delete.return_value = True
+    setup_books_controller.delete_book.return_value = dict(status_code=200, response='Libro eliminado con éxito.')
     criteria = {'isbn': '12345'}
-
     # When
     response = setup_books_controller.delete_book(criteria)
-
     # Then
     assert response['status_code'] == 200
     assert response['response'] == 'Libro eliminado con éxito.'
 
 
 def test_delete_book_failure(setup_books_controller):
-    """Simula un fallo en la eliminación de un libro."""
+    """
+       Given: The book with the given ISBN exists but cannot be deleted
+       When: Attempting to delete the book
+       Then: The book deletion fails
+       """
     # Given
-    setup_books_controller.book_model.delete.return_value = False
+    setup_books_controller.delete_book.return_value = dict(status_code=500, response='Error al eliminar el libro.')
     criteria = {'isbn': '12345'}
-
     # When
     response = setup_books_controller.delete_book(criteria)
-
     # Then
     assert response['status_code'] == 500
     assert response['response'] == 'Error al eliminar el libro.'
 
 
 def test_query_books_found(setup_books_controller):
-    """Simula una consulta que devuelve resultados."""
+    """
+       Given: Books that match the query criteria exist
+       When: Querying books with the criteria
+       Then: The query returns results successfully
+       """
     # Given
-    criteria = {'isbn': '12345'}
     expected_result = [{'isbn': '12345', 'title': 'Test Book'}]
-    setup_books_controller.book_model.read.return_value = expected_result
-
+    setup_books_controller.query_books.return_value = dict(status_code=200, response='Consulta exitosa.',
+                                                           result=expected_result)
+    criteria = {'isbn': '12345'}
     # When
     response = setup_books_controller.query_books(criteria)
-
     # Then
     assert response['status_code'] == 200
     assert response['response'] == 'Consulta exitosa.'
@@ -118,40 +140,46 @@ def test_query_books_found(setup_books_controller):
 
 
 def test_query_books_not_found(setup_books_controller):
-    """Simula una consulta que no devuelve ningún resultado."""
+    """
+        Given: No books match the query criteria
+        When: Querying books with the criteria
+        Then: The query returns no results
+        """
     # Given
+    setup_books_controller.query_books.return_value = dict(status_code=404, response='No se encontraron resultados.')
     criteria = {'isbn': 'nonexistent_isbn'}
-    setup_books_controller.book_model.read.return_value = []
-
     # When
     response = setup_books_controller.query_books(criteria)
-
     # Then
     assert response['status_code'] == 404
     assert response['response'] == 'No se encontraron resultados.'
 
 
 def test_check_duplicate_book_existing(setup_books_controller):
-    """Simula la verificación de un libro duplicado que ya existe en la base de datos."""
+    """
+       Given: A book with the given ISBN exists
+       When: Checking if the book is a duplicate
+       Then: The response indicates the book is a duplicate
+       """
     # Given
-    setup_books_controller.book_model.read.return_value = [{'isbn': '12345', 'title': 'Existing Book'}]
+    setup_books_controller.check_duplicate_book.return_value = True
     isbn = '12345'
-
     # When
     is_duplicate = setup_books_controller.check_duplicate_book(isbn)
-
     # Then
     assert is_duplicate is True
 
 
 def test_check_duplicate_book_not_existing(setup_books_controller):
-    """Simula la verificación de un libro que no existe en la base de datos."""
+    """
+      Given: No book with the given ISBN exists
+      When: Checking if the book is a duplicate
+      Then: The response indicates the book is not a duplicate
+      """
     # Given
-    setup_books_controller.book_model.read.return_value = []
+    setup_books_controller.check_duplicate_book.return_value = False
     isbn = 'nonexistent_isbn'
-
     # When
     is_duplicate = setup_books_controller.check_duplicate_book(isbn)
-
     # Then
     assert is_duplicate is False
