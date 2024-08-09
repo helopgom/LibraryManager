@@ -21,14 +21,14 @@ def test_create_book_success(setup_books_controller):
        """
     # Given
     setup_books_controller.check_duplicate_book.return_value = False
-    setup_books_controller.create_book.return_value = dict(status_code=200, response='Libro insertado con éxito.',
+    setup_books_controller.create_book.return_value = dict(status_code=200, response='Book inserted successfully.',
                                                            result={'isbn': '12345', 'title': 'Test Book'})
     data = {'isbn': '12345', 'title': 'Test Book'}
     # When
     response = setup_books_controller.create_book(data)
     # Then
     assert response['status_code'] == 200
-    assert response['response'] == 'Libro insertado con éxito.'
+    assert response['response'] == 'Book inserted successfully.'
     assert response['result'] == data
 
 
@@ -42,14 +42,14 @@ def test_create_book_duplicate(setup_books_controller):
     setup_books_controller.check_duplicate_book.return_value = True
     setup_books_controller.create_book.return_value = {
         'status_code': 400,
-        'response': 'El libro con el ISBN 12345 ya existe.'
+        'response': 'The book with ISBN 12345 already exists.'
     }
     data = {'isbn': '12345', 'title': 'Test Book'}
     # When
     response = setup_books_controller.create_book(data)
     # Then
     assert response['status_code'] == 400
-    assert response['response'] == 'El libro con el ISBN 12345 ya existe.'
+    assert response['response'] == 'The book with ISBN 12345 already exists.'
 
 
 def test_update_book_success(setup_books_controller):
@@ -60,14 +60,14 @@ def test_update_book_success(setup_books_controller):
        """
     # Given
     setup_books_controller.update_book_data.return_value = dict(status_code=200,
-                                                                response='Libro actualizado con éxito.')
+                                                                response='Book updated successfully.')
     criteria = {'isbn': '12345'}
     new_data = {'title': 'Updated Test Book'}
     # When
     response = setup_books_controller.update_book_data(criteria, new_data)
     # Then
     assert response['status_code'] == 200
-    assert response['response'] == 'Libro actualizado con éxito.'
+    assert response['response'] == 'Book updated successfully.'
 
 
 def test_update_book_failure(setup_books_controller):
@@ -78,14 +78,14 @@ def test_update_book_failure(setup_books_controller):
        """
     # Given
     setup_books_controller.update_book_data.return_value = dict(status_code=500,
-                                                                response='Error al actualizar el libro.')
+                                                                response='Error updating the book.')
     criteria = {'isbn': '12345'}
     new_data = {'title': 'Updated Test Book'}
     # When
     response = setup_books_controller.update_book_data(criteria, new_data)
     # Then
     assert response['status_code'] == 500
-    assert response['response'] == 'Error al actualizar el libro.'
+    assert response['response'] == 'Error updating the book.'
 
 
 def test_delete_book_success(setup_books_controller):
@@ -95,13 +95,13 @@ def test_delete_book_success(setup_books_controller):
        Then: The book is successfully deleted
        """
     # Given
-    setup_books_controller.delete_book.return_value = dict(status_code=200, response='Libro eliminado con éxito.')
+    setup_books_controller.delete_book.return_value = dict(status_code=200, response='Book deleted successfully.')
     criteria = {'isbn': '12345'}
     # When
     response = setup_books_controller.delete_book(criteria)
     # Then
     assert response['status_code'] == 200
-    assert response['response'] == 'Libro eliminado con éxito.'
+    assert response['response'] == 'Book deleted successfully.'
 
 
 def test_delete_book_failure(setup_books_controller):
@@ -111,13 +111,13 @@ def test_delete_book_failure(setup_books_controller):
        Then: The book deletion fails
        """
     # Given
-    setup_books_controller.delete_book.return_value = dict(status_code=500, response='Error al eliminar el libro.')
+    setup_books_controller.delete_book.return_value = dict(status_code=500, response='Error deleting the book.')
     criteria = {'isbn': '12345'}
     # When
     response = setup_books_controller.delete_book(criteria)
     # Then
     assert response['status_code'] == 500
-    assert response['response'] == 'Error al eliminar el libro.'
+    assert response['response'] == 'Error deleting the book.'
 
 
 def test_query_books_found(setup_books_controller):
@@ -128,14 +128,14 @@ def test_query_books_found(setup_books_controller):
        """
     # Given
     expected_result = [{'isbn': '12345', 'title': 'Test Book'}]
-    setup_books_controller.query_books.return_value = dict(status_code=200, response='Consulta exitosa.',
+    setup_books_controller.query_books.return_value = dict(status_code=200, response='Query successful.',
                                                            result=expected_result)
     criteria = {'isbn': '12345'}
     # When
     response = setup_books_controller.query_books(criteria)
     # Then
     assert response['status_code'] == 200
-    assert response['response'] == 'Consulta exitosa.'
+    assert response['response'] == 'Query successful.'
     assert response['result'] == expected_result
 
 
@@ -146,13 +146,13 @@ def test_query_books_not_found(setup_books_controller):
         Then: The query returns no results
         """
     # Given
-    setup_books_controller.query_books.return_value = dict(status_code=404, response='No se encontraron resultados.')
+    setup_books_controller.query_books.return_value = dict(status_code=404, response='No results found.')
     criteria = {'isbn': 'nonexistent_isbn'}
     # When
     response = setup_books_controller.query_books(criteria)
     # Then
     assert response['status_code'] == 404
-    assert response['response'] == 'No se encontraron resultados.'
+    assert response['response'] == 'No results found.'
 
 
 def test_check_duplicate_book_existing(setup_books_controller):

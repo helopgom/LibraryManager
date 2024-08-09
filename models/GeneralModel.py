@@ -4,9 +4,6 @@ from config.DbConnection import Connection
 from models.BaseModel import BaseModel
 import logging
 
-logging.basicConfig(level=logging.ERROR)
-logger = logging.getLogger(__name__)
-
 
 class GeneralModel(BaseModel):
     def __init__(self):
@@ -14,14 +11,14 @@ class GeneralModel(BaseModel):
         try:
             self.connection = Connection().get_connection()
             if self.connection is None:
-                raise ConnectionError("No se pudo establecer la conexión con la base de datos.")
+                raise ConnectionError("The connection to the database could not be established.")
         except Exception as e:
-            logger.error(f"Error al intentar conectar a la base de datos: {e}")
+            logging.error(f"Error when trying to connect to the database: {e}")
             self.connection = None
 
     def _execute_query(self, query, params, fetch=False):
         if not self.connection:
-            logger.error("No hay conexión a la base de datos.")
+            logging.error("There is no connection to the database.")
             return None
 
         try:
@@ -33,7 +30,7 @@ class GeneralModel(BaseModel):
                 return cursor.rowcount
         except (psycopg2.Error, errors.DatabaseError) as e:
             self.connection.rollback()
-            logger.error(f"Error en la consulta: {e}")
+            logging.error(f"Error in the query: {e}")
             return None
 
     def create(self, table, data):
