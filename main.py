@@ -40,9 +40,9 @@ book = BooksModel()
 
 # Datos del libro de ejemplo
 data = {
-    'title': "funcionando2",
-    'author': "Francisco",
-    'isbn': "9753512",
+    'title': "funcionando",
+    'author': "Helena",
+    'isbn': "93515212",
     'year_edition': "2013-01-12",
     'category_id_categories': 3
 }
@@ -53,7 +53,7 @@ data = {
 
 if __name__ == "__main__":
     # Crear libro
-    #   book.create_book(data)
+    book.create_book(data)
 
     # # Criterios para actualizar un libro y los nuevos datos
     # update_criteria = {'book_id': 22}
@@ -65,4 +65,4 @@ if __name__ == "__main__":
     # book.delete_book(delete_criteria)
 
     # Consultar todos los libros
-    book.query_books({'book_id': 7})
+    book.query_books({'book_id': 9})
