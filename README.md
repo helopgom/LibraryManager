@@ -1,6 +1,6 @@
 #  Library Manager 📚
 
-Bienvenid@s. Este proyecto es un ejercicio de práctica del Bootcamp de Factoría F5 que fue pautado con el fin de desarrollar un sistema de gestión de bibliotecas que incluya funcionalidades esenciales para la gestión de inventario, préstamo de libros y alta de usuarios, además de una funcionalidad, generar abstracts de libros utilizando inteligencia artificial.
+Bienvenid@s. Este proyecto es un ejercicio de práctica del Bootcamp de Factoría F5 que fue pautado con el fin de desarrollar un sistema de gestión de bibliotecas que incluya funcionalidades esenciales para la gestión de inventario, préstamo de libros y alta de usuarios. 
 
 ## Índice
 
@@ -8,11 +8,9 @@ Bienvenid@s. Este proyecto es un ejercicio de práctica del Bootcamp de Factorí
 
 2-Requisitos Técnicos
 
-3-Visualización del resultado
+3-Instalación
 
-4-Instalación
-
-5-Equipo del Proyecto
+4-Equipo del Proyecto
 
 
 ## 1-Descripción del Proyecto
@@ -32,10 +30,12 @@ Desarrollamos un sistema para la gestión de una biblioteca a través de un CRUD
 
 -Testing
 
+## 3-Instalación
 
 
 
-## 5-Equipo del Proyecto
+
+## 4-Equipo del Proyecto
 
 [Helena](https://github.com/helopgom)
 
@@ -46,4 +46,3 @@ Desarrollamos un sistema para la gestión de una biblioteca a través de un CRUD
 [Belen](https://github.com/Belensanchez1989)
 
 [Paola](https://github.com/0795PAO)
-
