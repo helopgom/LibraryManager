@@ -18,10 +18,10 @@ def setup_user_controller(mocker):
 
 
 def test_check_user_existing_user(setup_user_controller):
-    """Given: A user with DNI 12345678 is simulated to check for existence.
-        When: An attempt is made to verify if the entered user exists.
-        Then: Once verified, the system should return a status code 400 with the message "Ya existe un usuario con el DNI 12345678," indicating an appropriate error message.
-        """
+    """Given: A user with DNI 12345678 is simulated to check for existence. When: An attempt is made to verify if the
+    entered user exists. Then: Once verified, the system should return a status code 400 with the message "Ya existe
+    un usuario con el DNI 12345678," indicating an appropriate error message.
+    """
     # Given
     setup_user_controller.user_model.check_user.return_value = "A user with DNI 12345678 already exists."
     data = {"dni": "12345678", "mail": "test@example.com"}

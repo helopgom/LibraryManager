@@ -41,7 +41,7 @@ book = BooksModel()
 # Datos del libro de ejemplo
 data = {
     'title': "funcionando",
-    'author': "Helena",
+    'author': "Esther",
     'isbn': "93515212",
     'year_edition': "2013-01-12",
     'category_id_categories': 3
