@@ -12,9 +12,9 @@ class UserController:
             verification_message = self.user_model.check_user(data)
             if verification_message:
                 return dict(status_code=400, response=verification_message)
-            return dict(status_code=200, response='Verificación exitosa, el usuario puede ser creado')
+            return dict(status_code=200, response='Verification successful, the user can be created.')
         except Exception as e:
-            return dict(status_code=500, response='Error interno del servidor: ' + str(e))
+            return dict(status_code=500, response='Internal server error: ' + str(e))
 
     def create_user(self, data):
         """Crea un nuevo usuario después de verificar que no haya duplicados."""
@@ -27,31 +27,31 @@ class UserController:
             # Crear el nuevo usuario si la verificación fue exitosa
             result = self.user_model.create_user(data)
             if result:
-                return dict(status_code=201, response='Usuario creado con éxito')
+                return dict(status_code=201, response='User created successfully.')
             else:
-                return dict(status_code=400, response='No se pudo crear el usuario')
+                return dict(status_code=400, response='Could not create the user.')
         except Exception as e:
-            return dict(status_code=500, response='Error interno del servidor: ' + str(e))
+            return dict(status_code=500, response='Internal server error: ' + str(e))
 
     def update_user(self, user_id, data):
         try:
             result = self.user_model.update_user(user_id, data)
             if result:
-                return dict(status_code=200, response='Usuario actualizado con éxito')
+                return dict(status_code=200, response='User updated successfully.')
             else:
-                return dict(status_code=400, response='No se pudo actualizar el usuario')
+                return dict(status_code=400, response='Could not update the user.')
         except Exception as e:
-            return dict(status_code=500, response='Error interno del servidor: ' + str(e))
+            return dict(status_code=500, response='Internal server error: ' + str(e))
 
     def delete_user(self, user_id):
         try:
             result = self.user_model.delete_user(user_id)
             if result:
-                return dict(status_code=200, response='El usuario fue eliminado de manera exitosa')
+                return dict(status_code=200, response='The user was successfully deleted.')
             else:
-                return dict(status_code=400, response='No se pudo eliminar el usuario')
+                return dict(status_code=400, response='Could not delete the user.')
         except Exception as e:
-            return dict(status_code=500, response='Error interno del servidor: ' + str(e))
+            return dict(status_code=500, response='Internal server error: ' + str(e))
 
     def search_users(self, criteria):
         try:
@@ -59,6 +59,6 @@ class UserController:
             if result:
                 return dict(status_code=200, response=result)
             else:
-                return dict(status_code=404, response='No se encontraron usuarios con esos criterios')
+                return dict(status_code=404, response='No users found with those criteria.')
         except Exception as e:
-            return dict(status_code=500, response='Error interno del servidor: ' + str(e))
+            return dict(status_code=500, response='Internal server error: ' + str(e))
