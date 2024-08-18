@@ -27,50 +27,47 @@ To see the complete design of the application, you can visit our [Mockup on Figm
 
 ## Requirements
 
-- Python 3.7 or higher.
-- psycopg2 for PostgreSQL database interaction
-- pytest for running tests
--  mock for mocking objects in tests
+- psycopg2 2.9.9 for PostgreSQL database interaction
+- pytest 8.3.1 for running tests
+- python-mock 3.14.0 for mocking objects in tests
 
 ## Installation and Configuration
 
 To install the required packages, you can use pip. It's recommended to create a virtual environment for your project.
 
-- Create a virtual environment:
+- Clone the repository:
 
-bash
+        git clone https://github.com/helopgom/LibraryManager.git
 
-python -m venv venv
+- Navigate into the project directory:
 
-Activate the virtual environment:
+        cd your-repository
 
-    On Windows:
+- Create a virtual environment: 
 
-    bash
+            python -m venv venv
 
-venv\Scripts\activate
+- Activate the virtual environment:
 
-On macOS/Linux:
+On Windows:
 
-bash
+    venv\Scripts\activate
 
-    source venv/bin/activate
+- On macOS/Linux:
 
-Install the dependencies:
+      source venv/bin/activate
 
-bash
+- Install the dependencies:
 
-pip install psycopg2-binary pytest mock
+      pip install psycopg2-binary pytest mock
 
 
 ## Project Developers
 
-### Frontend
 - [Belen](https://github.com/Belensanchez1989): Scrum Master
-- Esther P. Sarasua: Developer
-- Conchy Pereira: Developer
-- Belén Sanchez: Developer
-
-### Backend
-- Isamar Romero: Developer
 - [Lara](https://github.com/laradrb): Product Owner
+- [Esther](https://github.com/Fire-Fairy84): Developer
+- [Helena](https://github.com/helopgom): Developer 
+- [Paola F.](https://github.com/0795PAO): Developer 
+
+
