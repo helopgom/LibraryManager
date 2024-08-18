@@ -6,9 +6,6 @@
 - [Features](Features)
 - [Requirements](#Requirements)
 - [Installation and Configuration](#installation-and-configuration)
-- [Routes](#routes)
-- [Functional Features](#functional-features)
-- [Technical Features](#technical-features)
 - [Project Developers](#project-developers)
 
 
@@ -49,9 +46,9 @@ To install the required packages, you can use pip. It's recommended to create a 
 
 - Activate the virtual environment:
 
-On Windows:
+       On Windows:
 
-    venv\Scripts\activate
+       venv\Scripts\activate
 
 - On macOS/Linux:
 
