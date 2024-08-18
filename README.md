@@ -15,8 +15,6 @@ We develop a system for managing a library through a CRUD so that your database 
 
 ## Features
 
-To see the complete design of the application, you can visit our [Mockup on Figma](https://www.figma.com/design/Syc6WSsElojyub37hdt74n/InfoCatEmbalses?node-id=0-1&t=vcxeJOXpPUZyGfoA-0).
-
 - Connects to a PostgreSQL database using psycopg2.
 - Implements logging to track application events and errors.
 - Uses abstract base classes to define and enforce methods.
