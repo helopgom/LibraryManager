@@ -1,12 +1,12 @@
 import pytest
 from src.controllers.UserController import UserController
 
-"""Realización de los test del UserController @author Helena"""
+"""Implementation of the UserController tests @author Helena"""
 
 
 @pytest.fixture
 def setup_user_controller(mocker):
-    """Configuración del UserController con métodos del modelUser simulado para poder hacer las comprobaciones."""
+    """UserController configuration with simulated modelUser methods to enable validations."""
 
     controller = UserController()
     mocker.patch.object(controller.user_model, 'check_user')
@@ -19,8 +19,8 @@ def setup_user_controller(mocker):
 
 def test_check_user_existing_user(setup_user_controller):
     """Given: A user with DNI 12345678 is simulated to check for existence. When: An attempt is made to verify if the
-    entered user exists. Then: Once verified, the system should return a status code 400 with the message "Ya existe
-    un usuario con el DNI 12345678," indicating an appropriate error message.
+    entered user exists. Then: Once verified, the system should return a status code 400 with the message "A user
+    with DNI 12345678 already exists." indicating an appropriate error message.
     """
     # Given
     setup_user_controller.user_model.check_user.return_value = "A user with DNI 12345678 already exists."

@@ -40,9 +40,9 @@ book = BooksModel()
 
 # Datos del libro de ejemplo
 data = {
-    'title': "funcionando",
+    'title': "funcionando de nuevo",
     'author': "Esther",
-    'isbn': "93515212",
+    'isbn': "91515312",
     'year_edition': "2013-01-12",
     'category_id_categories': 3
 }
@@ -65,4 +65,4 @@ if __name__ == "__main__":
     # book.delete_book(delete_criteria)
 
     # Consultar todos los libros
-    book.query_books({'book_id': 9})
+    # book.query_books({'book_id': 9})
