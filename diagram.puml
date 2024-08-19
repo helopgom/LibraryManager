@@ -3,7 +3,10 @@ class Category {
     +int category_id
     +String category_name
     +Category(String category_name) <<constructor>>
+    +add_category()
+    +remove_category()
     +search_and_filtering()
+    +update_category()
 }
 
 class Book {
@@ -14,12 +17,11 @@ class Book {
     +Date year_edition
     +int category_id_categories
     +Book(String title, String author, String isbn, Date year_edition, int category_id) <<constructor>>
-    +show_book_info()
-    +register_new_book()
-    +update_availability()
-    +update_info()
-    +no_duplication()
+    +create_book()
+    +check_duplicate_book()
+    +update_book_data()
     +delete_book()
+    +query_books()
 }
 
 class User {
@@ -30,12 +32,11 @@ class User {
     +String mail
     +String phone
     +User(String dni, String user_name, String user_lastname, String mail, String phone) <<constructor>>
-    +show_user_info()
-    +register_new_user()
-    +update_info()
-    +no_duplication()
-    +search_and_filtering()
+    +check_user()
+    +create_user()
+    +update_user()
     +delete_user()
+    +search_users()
 }
 
 class LibraryLoan {
@@ -45,11 +46,14 @@ class LibraryLoan {
     +Date entry_date
     +Date return_date
     +LibraryLoan(int book_id, int user_id, Date entry_date, Date return_date) <<constructor>>
-    +register_new_loan()
+    +create_loan()
+    +read_loan()
+    +update_loan()
+    +delete_loan()
     +end_loan()
-    +show_loan_delay_alert()
-    +notify_loan_delay()
     +notify_return_date()
+    +return_delay_alert()
+    +notify_delay_date()
 }
 
 Category "1" -- "0..*" Book : contains
