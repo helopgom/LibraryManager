@@ -1,0 +1,2 @@
+INFO (18/08/2024 01:14:01 PM): Connection established with PostgreSQL. (Line: 26 [DbConnection.py]
+INFO (18/08/2024 01:14:01 PM): Book inserted successfully. (Line: 20 [BooksModel.py]

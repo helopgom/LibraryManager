@@ -1,10 +1,13 @@
 import pytest
 from src.controllers.UserController import UserController
 
+"""Implementation of the UserController tests @author Helena"""
+
 
 @pytest.fixture
 def setup_user_controller(mocker):
-    """Fixture to setup UserController with mocked UsersModel."""
+    """UserController configuration with simulated modelUser methods to enable validations."""
+
     controller = UserController()
     mocker.patch.object(controller.user_model, 'check_user')
     mocker.patch.object(controller.user_model, 'create_user')
@@ -15,21 +18,26 @@ def setup_user_controller(mocker):
 
 
 def test_check_user_existing_user(setup_user_controller):
-    """Test when user already exists in the system."""
+    """Given: A user with DNI 12345678 is simulated to check for existence. When: An attempt is made to verify if the
+    entered user exists. Then: Once verified, the system should return a status code 400 with the message "A user
+    with DNI 12345678 already exists." indicating an appropriate error message.
+    """
     # Given
-    setup_user_controller.user_model.check_user.return_value = "Ya existe un usuario con el DNI 12345678"
+    setup_user_controller.user_model.check_user.return_value = "A user with DNI 12345678 already exists."
     data = {"dni": "12345678", "mail": "test@example.com"}
-
     # When
     response = setup_user_controller.check_user(data)
 
     # Then
     assert response['status_code'] == 400
-    assert response['response'] == "Ya existe un usuario con el DNI 12345678"
+    assert response['response'] == "A user with DNI 12345678 already exists."
 
 
 def test_check_user_new_user(setup_user_controller):
-    """Test when user does not exist and can be created."""
+    """Given: A new user with DNI 87654321 does not exist in the system.
+        When: A check is performed to see if the user can be created.
+        Then: The system should return a status code 200 indicating that the user can be created.
+    """
     # Given
     setup_user_controller.user_model.check_user.return_value = None
     data = {"dni": "87654321", "mail": "newuser@example.com"}
@@ -39,11 +47,15 @@ def test_check_user_new_user(setup_user_controller):
 
     # Then
     assert response['status_code'] == 200
-    assert response['response'] == 'Verificación exitosa, el usuario puede ser creado'
+    assert response['response'] == 'Verification successful, the user can be created.'
 
 
 def test_create_user_success(setup_user_controller):
-    """Test successful user creation."""
+    """Given: A user passes all verification checks and is not a duplicate.
+        When: An attempt is made to create the user.
+        Then: The system should return a status code 201 indicating successful creation.
+        """
+
     # Given
     setup_user_controller.user_model.check_user.return_value = None
     setup_user_controller.user_model.create_user.return_value = True
@@ -54,13 +66,16 @@ def test_create_user_success(setup_user_controller):
 
     # Then
     assert response['status_code'] == 201
-    assert response['response'] == 'Usuario creado con éxito'
+    assert response['response'] == 'User created successfully.'
 
 
 def test_create_user_existing_user(setup_user_controller):
-    """Test attempting to create a user that already exists."""
+    """ Given: A user with DNI 12345678 already exists.
+        When: An attempt is made to create a user with the same DNI.
+        Then: The system should return a status code 400 with an error message.
+    """
     # Given
-    setup_user_controller.user_model.check_user.return_value = "Ya existe un usuario con el DNI 12345678"
+    setup_user_controller.user_model.check_user.return_value = "A user with DNI 12345678 already exists."
     data = {"dni": "12345678", "mail": "test@example.com"}
 
     # When
@@ -68,11 +83,14 @@ def test_create_user_existing_user(setup_user_controller):
 
     # Then
     assert response['status_code'] == 400
-    assert response['response'] == "Ya existe un usuario con el DNI 12345678"
+    assert response['response'] == "A user with DNI 12345678 already exists."
 
 
 def test_update_user_success(setup_user_controller):
-    """Test successful user update."""
+    """Given: A user with ID 1 exists, and new data is provided for updating.
+        When: An attempt is made to update the user's information.
+        Then: The system should return a status code 200 indicating that the update was successful.
+    """
     # Given
     user_id = 1
     data = {"mail": "updateduser@example.com"}
@@ -83,11 +101,14 @@ def test_update_user_success(setup_user_controller):
 
     # Then
     assert response['status_code'] == 200
-    assert response['response'] == 'Usuario actualizado con éxito'
+    assert response['response'] == 'User updated successfully.'
 
 
 def test_update_user_failure(setup_user_controller):
-    """Test user update failure due to conflict."""
+    """Given: A user with ID 1 exists, and there is an email address that causes a conflict.
+        When: An attempt is made to update the user's information with conflicting data.
+        Then: The system should return a status code 400 indicating that the update failed.
+        """
     # Given
     user_id = 1
     data = {"mail": "conflictingemail@example.com"}
@@ -98,11 +119,14 @@ def test_update_user_failure(setup_user_controller):
 
     # Then
     assert response['status_code'] == 400
-    assert response['response'] == 'No se pudo actualizar el usuario'
+    assert response['response'] == 'Could not update the user.'
 
 
 def test_delete_user_success(setup_user_controller):
-    """Test successful user deletion."""
+    """Given: A user with ID 1 exists and can be deleted.
+        When: An attempt is made to delete the user.
+        Then: The system should return a status code 200 indicating that the deletion was successful.
+    """
     # Given
     user_id = 1
     setup_user_controller.user_model.delete_user.return_value = True
@@ -112,11 +136,14 @@ def test_delete_user_success(setup_user_controller):
 
     # Then
     assert response['status_code'] == 200
-    assert response['response'] == 'El usuario fue eliminado de manera exitosa'
+    assert response['response'] == 'The user was successfully deleted.'
 
 
 def test_delete_user_failure(setup_user_controller):
-    """Test user deletion failure."""
+    """Given: A user with ID 1 exists and cannot be deleted.
+        When: An attempt is made to delete the user.
+        Then: The system should return a status code 400 indicating that the deletion failed.
+    """
     # Given
     user_id = 1
     setup_user_controller.user_model.delete_user.return_value = None
@@ -126,11 +153,14 @@ def test_delete_user_failure(setup_user_controller):
 
     # Then
     assert response['status_code'] == 400
-    assert response['response'] == 'No se pudo eliminar el usuario'
+    assert response['response'] == 'Could not delete the user.'
 
 
 def test_search_users_found(setup_user_controller):
-    """Test searching users with results found."""
+    """Given: A search criterion that matches an existing user is simulated.
+        When: The search is performed using the selected criterion.
+        Then: The system should return a status code 200 with the search results.
+    """
     # Given
     criteria = {"name": "Test User"}
     expected_result = [{"user_id": 1, "name": "Test User", "mail": "test@example.com"}]
@@ -145,7 +175,10 @@ def test_search_users_found(setup_user_controller):
 
 
 def test_search_users_not_found(setup_user_controller):
-    """Test searching users with no results found."""
+    """Given: A search criterion is simulated that does not match any user in the database.
+        When: A search is performed using this non-matching criterion.
+        Then: The system should return a status code 404 with a message indicating that no users were found.
+    """
     # Given
     criteria = {"name": "Nonexistent User"}
     setup_user_controller.user_model.search_users.return_value = []
@@ -155,4 +188,4 @@ def test_search_users_not_found(setup_user_controller):
 
     # Then
     assert response['status_code'] == 404
-    assert response['response'] == 'No se encontraron usuarios con esos criterios'
+    assert response['response'] == 'No users found with those criteria.'
