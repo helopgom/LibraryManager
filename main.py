@@ -85,4 +85,4 @@ category_data = {
 # book.query_books({'title': 'titulo consultado'})
 
 # # Crear nuevo préstamo
-#     library_loan.create_loan(3, 1, "2022-07-19", "2022-03-25")
+#     library_loan.create_loan(1, 1, "2023-07-19", "2023-03-25")

@@ -1,4 +1,3 @@
-
 import psycopg2
 import logging
 from models.GeneralModel import GeneralModel
@@ -33,16 +32,6 @@ class LibraryLoans(GeneralModel):
             return None
 
 
-    # def read_loan(self, loan_id):
-    #     try:
-    #         # Lee un préstamo específico
-    #         result = self.read(self.table, {"loan_id": loan_id})
-    #         return result
-    #
-    #     except psycopg2.Error as e:
-    #         logging.error(f"Error reading the loan: {e}")
-    #         return None
-
     def read_loan(self, loan_id):
         try:
             query = f"SELECT * FROM {self.table} WHERE loan_id = %s"
@@ -53,18 +42,17 @@ class LibraryLoans(GeneralModel):
             logging.error(f"Error reading the loan: {e}")
             return None
 
+
     def update_loan(self, loan_id, book_id_books=None, user_id_users=None, entry_date=None, return_date=None):
         try:
-            # Verifica si el préstamo existe
+
             existing_loan = self.read_loan(loan_id)
             if not existing_loan:
                 raise ValueError(f"Loan with ID {loan_id} not found.")
 
-            # Actualiza el préstamo
             loan_data = {"book_id_books": book_id_books, "user_id_users": user_id_users, "entry_date": entry_date,
                          "return_date": return_date}
 
-            # Filtra None para no actualizar campos vacíos
             loan_data = {key: value for key, value in loan_data.items() if value is not None}
 
             result = self.update(self.table, loan_data, {"loan_id": loan_id})
@@ -78,16 +66,16 @@ class LibraryLoans(GeneralModel):
             logging.error(f"Error updating the loan: {e}")
             return None
 
+
     def delete_loan(self, loan_id):
         try:
-            # Verifica si el préstamo existe
+
             existing_loan = self.read_loan(loan_id)
             if not existing_loan:
                 raise ValueError(f"Loan with ID {loan_id} not found.")
 
-                # Elimina el préstamo
-                result = self.delete(self.table, {"loan_id": loan_id})
-                return result
+            result = self.delete(self.table, {"loan_id": loan_id})
+            return result
 
         except ValueError as ve:
             logging.error(ve)
