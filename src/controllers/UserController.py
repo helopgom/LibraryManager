@@ -6,9 +6,7 @@ class UserController:
         self.user_model = UsersModel()
 
     def check_user(self, data):
-        """Verify if a user with the same ID or email already exists."""
         try:
-            # Verifica el usuario usando el método del modelo
             verification_message = self.user_model.check_user(data)
             if verification_message:
                 return dict(status_code=400, response=verification_message)
@@ -17,14 +15,11 @@ class UserController:
             return dict(status_code=500, response='Internal server error: ' + str(e))
 
     def create_user(self, data):
-        """Create a new user after verifying that there are no duplicates."""
         try:
-            # Verificar si ya existe un usuario con el mismo DNI o correo
             verification_response = self.check_user(data)
             if verification_response['status_code'] != 200:
                 return verification_response
 
-            # Crear el nuevo usuario si la verificación fue exitosa
             result = self.user_model.create_user(data)
             if result:
                 return dict(status_code=201, response='User created successfully.')
