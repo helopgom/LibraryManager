@@ -19,7 +19,7 @@ def test_create_loan_success(setup_loans_controller):
 
     # Given
     setup_loans_controller.loans_model.create_loan.return_value = 1
-    loan_data = {"loan_id": 1, "book_id_books": 101, "user_id": 1001, "entry_date": "2024-08-01","return_date": "2024-08-15"}
+    loan_data = {"loan_id": 1, "book_id_books": 101, "user_id_users": 1001, "entry_date": "2024-08-01","return_date": "2024-08-15"}
 
     # When
     response = setup_loans_controller.create_loan(loan_data)
@@ -37,7 +37,7 @@ def test_read_loan_success(setup_loans_controller):
 
     # Given
     loan_id = 1
-    expected_loan = {"loan_id": 1,"book_id_books": 101,"user_id": 1001, "entry_date": "2024-08-01", "return_date": "2024-08-15"}
+    expected_loan = {"loan_id": 1,"book_id_books": 101,"user_id_users": 1001, "entry_date": "2024-08-01", "return_date": "2024-08-15"}
     setup_loans_controller.loans_model.read_loan.return_value = expected_loan
 
     # When
@@ -55,7 +55,7 @@ def test_update_loan_success(setup_loans_controller):
 
     # Given
     loan_id = 1
-    update_data = {"book_id_books": 101,"user_id": 1001,"entry_date": "2024-08-02", "return_date": "2024-08-16"}
+    update_data = {"book_id_books": 101,"user_id_users": 1001,"entry_date": "2024-08-02", "return_date": "2024-08-16"}
     setup_loans_controller.loans_model.update_loan.return_value = 1
 
     # When
