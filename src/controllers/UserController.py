@@ -2,42 +2,63 @@ from models.UsersModel import UsersModel
 
 
 class UserController:
-
     def __init__(self):
         self.user_model = UsersModel()
 
-    def create_user(self, dni, user_name, user_lastname, mail, phone):
+    def check_user(self, data):
+        """Verify if a user with the same ID or email already exists."""
         try:
-            success, error = self.user_model.create_user(dni, user_name, user_lastname, mail, phone)
-            if success:
-                return dict(status_code=200,
-                            response='El usuario fue creado de manera exitosa',
-                            result=[dni, user_name, user_lastname, mail, phone])
-            else:
-                return dict(status_code=400,
-                            response='Error al crear el usuario: ' + error,
-                            error=error)
+            # Verifica el usuario usando el método del modelo
+            verification_message = self.user_model.check_user(data)
+            if verification_message:
+                return dict(status_code=400, response=verification_message)
+            return dict(status_code=200, response='Verification successful, the user can be created.')
         except Exception as e:
-            return dict(status_code=500,
-                        response='Error interno del servidor: ' + str(e))
+            return dict(status_code=500, response='Internal server error: ' + str(e))
+
+    def create_user(self, data):
+        """Create a new user after verifying that there are no duplicates."""
+        try:
+            # Verificar si ya existe un usuario con el mismo DNI o correo
+            verification_response = self.check_user(data)
+            if verification_response['status_code'] != 200:
+                return verification_response
+
+            # Crear el nuevo usuario si la verificación fue exitosa
+            result = self.user_model.create_user(data)
+            if result:
+                return dict(status_code=201, response='User created successfully.')
+            else:
+                return dict(status_code=400, response='Could not create the user.')
+        except Exception as e:
+            return dict(status_code=500, response='Internal server error: ' + str(e))
+
+    def update_user(self, user_id, data):
+        try:
+            result = self.user_model.update_user(user_id, data)
+            if result:
+                return dict(status_code=200, response='User updated successfully.')
+            else:
+                return dict(status_code=400, response='Could not update the user.')
+        except Exception as e:
+            return dict(status_code=500, response='Internal server error: ' + str(e))
 
     def delete_user(self, user_id):
-        success, error = self.user_model.delete_user(user_id)
-        if success:
-            return dict(status_code=200,
-                        response='El usuario fue eliminado de manera exitosa')
-        else:
-            return dict(status_code=500,
-                        response='Error al eliminar el usuario',
-                        error=error)
+        try:
+            result = self.user_model.delete_user(user_id)
+            if result:
+                return dict(status_code=200, response='The user was successfully deleted.')
+            else:
+                return dict(status_code=400, response='Could not delete the user.')
+        except Exception as e:
+            return dict(status_code=500, response='Internal server error: ' + str(e))
 
-    def update_user(self, user_id, dni, user_name, user_lastname, mail, phone):
-        success, error = self.user_model.update_user(user_id, dni, user_name, user_lastname, mail, phone)
-        if success:
-            return dict(status_code=200,
-                        response='El usuario fue actualizado de manera exitosa',
-                        result=[user_id, dni, user_name, user_lastname, mail, phone])
-        else:
-            return dict(status_code=500,
-                        response='Error al actualizar el usuario',
-                        error=error)
+    def search_users(self, criteria):
+        try:
+            result = self.user_model.search_users(criteria)
+            if result:
+                return dict(status_code=200, response=result)
+            else:
+                return dict(status_code=404, response='No users found with those criteria.')
+        except Exception as e:
+            return dict(status_code=500, response='Internal server error: ' + str(e))

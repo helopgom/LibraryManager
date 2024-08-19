@@ -1,11 +1,7 @@
 import psycopg2
-from psycopg2 import errors
 from config.DbConnection import Connection
 from models.BaseModel import BaseModel
 import logging
-
-logging.basicConfig(level=logging.ERROR)
-logger = logging.getLogger(__name__)
 
 
 class GeneralModel(BaseModel):
@@ -14,14 +10,14 @@ class GeneralModel(BaseModel):
         try:
             self.connection = Connection().get_connection()
             if self.connection is None:
-                raise ConnectionError("No se pudo establecer la conexión con la base de datos.")
+                raise ConnectionError("The connection to the database could not be established.")
         except Exception as e:
-            logger.error(f"Error al intentar conectar a la base de datos: {e}")
+            logging.error(f"Error when trying to connect to the database: {e}")
             self.connection = None
 
     def _execute_query(self, query, params, fetch=False):
         if not self.connection:
-            logger.error("No hay conexión a la base de datos.")
+            logging.error("There is no connection to the database.")
             return None
 
         try:
@@ -31,32 +27,48 @@ class GeneralModel(BaseModel):
                     return cursor.fetchall()
                 self.connection.commit()
                 return cursor.rowcount
-        except (psycopg2.Error, errors.DatabaseError) as e:
+        except psycopg2.Error as e:
             self.connection.rollback()
-            logger.error(f"Error en la consulta: {e}")
+            logging.error(f"Error in the query: {e}")
             return None
 
     def create(self, table, data):
-        columns = ', '.join(data.keys())
-        values = ', '.join(['%s'] * len(data))
-        query = f"INSERT INTO {table} ({columns}) VALUES ({values})"
-        return self._execute_query(query, list(data.values()))
+        try:
+            columns = ', '.join(data.keys())
+            values = ', '.join(['%s'] * len(data))
+            query = f"INSERT INTO {table} ({columns}) VALUES ({values})"
+            return self._execute_query(query, list(data.values()))
+        except Exception as e:
+            logging.error(f"Error creating record in {table}: {e}")
+            return None
 
     def read(self, table, criteria=None):
-        query = f"SELECT * FROM {table}"
-        params = []
-        if criteria:
-            query += " WHERE " + ' AND '.join([f"{key}=%s" for key in criteria.keys()])
-            params = list(criteria.values())
-        return self._execute_query(query, params, fetch=True)
+        try:
+            query = f"SELECT * FROM {table}"
+            params = []
+            if criteria:
+                query += " WHERE " + ' AND '.join([f"{key}=%s" for key in criteria.keys()])
+                params = list(criteria.values())
+            return self._execute_query(query, params, fetch=True)
+        except Exception as e:
+            logging.error(f"Error reading from {table}: {e}")
+            return None
 
     def update(self, table, data, criteria):
-        set_clause = ', '.join([f"{key}=%s" for key in data.keys()])
-        where_clause = ' AND '.join([f"{key}=%s" for key in criteria.keys()])
-        query = f"UPDATE {table} SET {set_clause} WHERE {where_clause}"
-        return self._execute_query(query, list(data.values()) + list(criteria.values()))
+        try:
+            set_clause = ', '.join([f"{key}=%s" for key in data.keys()])
+            where_clause = ' AND '.join([f"{key}=%s" for key in criteria.keys()])
+            query = f"UPDATE {table} SET {set_clause} WHERE {where_clause}"
+            return self._execute_query(query, list(data.values()) + list(criteria.values()))
+        except Exception as e:
+            logging.error(f"Error updating record in {table}: {e}")
+            return None
 
     def delete(self, table, criteria):
-        where_clause = ' AND '.join([f"{key}=%s" for key in criteria.keys()])
-        query = f"DELETE FROM {table} WHERE {where_clause}"
-        return self._execute_query(query, list(criteria.values()))
+        try:
+            where_clause = ' AND '.join([f"{key}=%s" for key in criteria.keys()])
+            query = f"DELETE FROM {table} WHERE {where_clause}"
+            return self._execute_query(query, list(criteria.values()))
+        except Exception as e:
+            logging.error(f"Error deleting record from {table}: {e}")
+            return None
