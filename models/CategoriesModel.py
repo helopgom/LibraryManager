@@ -2,6 +2,7 @@
 import psycopg2
 from psycopg2 import errors
 from models.GeneralModel import GeneralModel
+import logging
 
 class CategoriesModel(GeneralModel):
     def __init__(self):
@@ -59,7 +60,7 @@ class CategoriesModel(GeneralModel):
 
     def _execute_query(self, query, params, fetch=False):
         if not self.connection:
-            print("No hay conexión a la base de datos.")
+            logging.error("No connection to data base.")
             return None
 
         try:
@@ -71,5 +72,5 @@ class CategoriesModel(GeneralModel):
                 return cursor.rowcount
         except (psycopg2.Error, errors.DatabaseError) as e:
             self.connection.rollback()
-            print(f"Error en la consulta: {e}")
+            logging.error(f"Consulting error: {e}")
             return None

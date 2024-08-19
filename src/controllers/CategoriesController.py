@@ -6,25 +6,25 @@ class CategoriesController:
 
     def check_category(self, data):
         try:
-            # Verifica la categoría usando el método del modelo
+            # Check category using model method
             verification_message = self.categories_model.check_category(
                 category_id=data.get('category_id'),
                 category_name=data.get('category_name')
             )
             if verification_message:
                 return dict(status_code=400, response='That category already exists.')
-            return dict(status_code=200, response='La categoría no existe, puede ser creada.')
+            return dict(status_code=200, response='Category does not exist, can be created.')
         except Exception as e:
-            return dict(status_code=500, response='Error interno del servidor: ' + str(e))
+            return dict(status_code=500, response='Server error: ' + str(e))
 
     def create_category(self, data):
         try:
-            # Verificar si ya existe una categoría con el mismo ID o nombre
+            # Check if category already exists with same ID or name
             verification_response = self.check_category(data)
             if verification_response['status_code'] != 200:
                 return verification_response
 
-            # Crear la nueva categoría si la verificación fue exitosa
+            # Create new category if checking was successful
             result = self.categories_model.create_category(
                 category_id=data.get('category_id'),
                 category_name=data.get('category_name')
@@ -32,9 +32,9 @@ class CategoriesController:
             if result:
                 return dict(status_code=201, response='Category created successfully.')
             else:
-                return dict(status_code=400, response='No se pudo crear la categoría.')
+                return dict(status_code=400, response='Cannot create category.')
         except Exception as e:
-            return dict(status_code=500, response='Error interno del servidor: ' + str(e))
+            return dict(status_code=500, response='Server error: ' + str(e))
 
     def update_category(self, category_id, data):
         try:
@@ -46,9 +46,9 @@ class CategoriesController:
             if result:
                 return dict(status_code=200, response='Category updated successfully.')
             else:
-                return dict(status_code=400, response='No se pudo actualizar la categoría.')
+                return dict(status_code=400, response='Could not update category.')
         except Exception as e:
-            return dict(status_code=500, response='Error interno del servidor: ' + str(e))
+            return dict(status_code=500, response='Server error: ' + str(e))
 
     def delete_category(self, category_id):
         try:
@@ -59,9 +59,9 @@ class CategoriesController:
             if result:
                 return dict(status_code=200, response='Category deleted successfully.')
             else:
-                return dict(status_code=400, response='No se pudo eliminar la categoría.')
+                return dict(status_code=400, response='Could not delete category.')
         except Exception as e:
-            return dict(status_code=500, response='Error interno del servidor: ' + str(e))
+            return dict(status_code=500, response='Server error: ' + str(e))
 
     def search_categories(self, criteria):
         try:
@@ -72,6 +72,6 @@ class CategoriesController:
             if result:
                 return dict(status_code=200, response=result)
             else:
-                return dict(status_code=404, response='No se encontraron categorías con esos criterios.')
+                return dict(status_code=404, response='Could not find category with that criteria.')
         except Exception as e:
-            return dict(status_code=500, response='Error interno del servidor: ' + str(e))
+            return dict(status_code=500, response='Server error: ' + str(e))
