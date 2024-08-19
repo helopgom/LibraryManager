@@ -12,7 +12,7 @@ class CategoriesController:
                 category_name=data.get('category_name')
             )
             if verification_message:
-                return dict(status_code=400, response='La categoría ya existe.')
+                return dict(status_code=400, response='That category already exists.')
             return dict(status_code=200, response='La categoría no existe, puede ser creada.')
         except Exception as e:
             return dict(status_code=500, response='Error interno del servidor: ' + str(e))
@@ -30,7 +30,7 @@ class CategoriesController:
                 category_name=data.get('category_name')
             )
             if result:
-                return dict(status_code=201, response='Categoría creada con éxito.')
+                return dict(status_code=201, response='Category created successfully.')
             else:
                 return dict(status_code=400, response='No se pudo crear la categoría.')
         except Exception as e:
@@ -44,7 +44,7 @@ class CategoriesController:
                 criteria={'category_id': category_id}
             )
             if result:
-                return dict(status_code=200, response='Categoría actualizada con éxito.')
+                return dict(status_code=200, response='Category updated successfully.')
             else:
                 return dict(status_code=400, response='No se pudo actualizar la categoría.')
         except Exception as e:
@@ -57,7 +57,7 @@ class CategoriesController:
                 criteria={'category_id': category_id}
             )
             if result:
-                return dict(status_code=200, response='Categoría eliminada con éxito.')
+                return dict(status_code=200, response='Category deleted successfully.')
             else:
                 return dict(status_code=400, response='No se pudo eliminar la categoría.')
         except Exception as e:
